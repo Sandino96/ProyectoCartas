@@ -54,94 +54,10 @@ void position1(int number){
 }
 
 void position2(int number){
-	move(7,4);
-	printw("_____________________");
-	move(18,4);
-	printw("_____________________");
-	for(int i = 8; i <= 18; i++){
-		move(i,4);
-		printw("|");
-	}
-	for(int i = 8; i <= 18; i++){
-		move(i,24);
-		printw("|");
-	}
-	int x = 9, y = 7;
-	cards(number,x,y);
-}
-
-void position3(int number){
-	move(7,4);
-	printw("_____________________");
-	move(18,4);
-	printw("_____________________");
-	for(int i = 8; i <= 18; i++){
-		move(i,4);
-		printw("|");
-	}
-	for(int i = 8; i <= 18; i++){
-		move(i,24);
-		printw("|");
-	}
-	int x = 9, y = 7;
-	cards(number,x,y);
-}
-
-void position4(int number){
-	move(7,4);
-	printw("_____________________");
-	move(18,4);
-	printw("_____________________");
-	for(int i = 8; i <= 18; i++){
-		move(i,4);
-		printw("|");
-	}
-	for(int i = 8; i <= 18; i++){
-		move(i,24);
-		printw("|");
-	}
-	int x = 9, y = 7;
-	cards(number,x,y);
-}
-
-void position5(int number){
-	move(7,4);
-	printw("_____________________");
-	move(18,4);
-	printw("_____________________");
-	for(int i = 8; i <= 18; i++){
-		move(i,4);
-		printw("|");
-	}
-	for(int i = 8; i <= 18; i++){
-		move(i,24);
-		printw("|");
-	}
-	int x = 9, y = 7;
-	cards(number,x,y);
-}
-
-void linesUpAndDown(){
 	move(7,29);
-	printw("_____________________");
-	move(7,56);
-	printw("_____________________");
-	move(7,83);
-	printw("_____________________");
-	move(7,110);
 	printw("_____________________");
 	move(18,29);
 	printw("_____________________");
-	move(18,56);
-	printw("_____________________");
-	move(18,83);
-	printw("_____________________");
-	move(18,110);
-	printw("_____________________");
-}
-
-void linesOfSides(){
-	
 	for(int i = 8; i <= 18; i++){
 		move(i,29);
 		printw("|");
@@ -150,6 +66,15 @@ void linesOfSides(){
 		move(i,49);
 		printw("|");
 	}
+	int x = 9, y = 32;
+	cards(number,x,y);
+}
+
+void position3(int number){
+	move(7,56);
+	printw("_____________________");
+	move(18,56);
+	printw("_____________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,56);
 		printw("|");
@@ -158,6 +83,15 @@ void linesOfSides(){
 		move(i,76);
 		printw("|");
 	}
+	int x = 9, y = 59;
+	cards(number,x,y);
+}
+
+void position4(int number){
+	move(7,83);
+	printw("_____________________");
+	move(18,83);
+	printw("_____________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,83);
 		printw("|");
@@ -166,6 +100,15 @@ void linesOfSides(){
 		move(i,103);
 		printw("|");
 	}
+	int x = 9, y = 86;
+	cards(number,x,y);
+}
+
+void position5(int number){
+	move(7,110);
+	printw("_____________________");
+	move(18,110);
+	printw("_____________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,110);
 		printw("|");
@@ -174,6 +117,8 @@ void linesOfSides(){
 		move(i,130);
 		printw("|");
 	}
+	int x = 9, y = 113;
+	cards(number,x,y);
 }
 
 void cards(int number, int x, int y){
@@ -283,10 +228,10 @@ void cards(int number, int x, int y){
 	}
 }
 
-/*int game(bool start){
+int game(bool start){
 	if (start){
 		int card = rand %14;
 		srand(time(0));
 		return card;
 	}
-}*/
+}
