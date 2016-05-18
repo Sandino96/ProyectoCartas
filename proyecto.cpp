@@ -18,6 +18,10 @@ void linesUpAndDown();
 void linesOfSides();
 void cards(int,int,int);
 void position1(int);
+void position2(int);
+void position3(int);
+void position4(int);
+void position5(int);
 int game(bool);
 int number();
 
@@ -30,6 +34,10 @@ int main(){
 	move(4,60);
 	printw("MAY THE LUCK BE WITH YOU");
 	position1(1);
+	position2(1);
+	position3(1);
+	position4(1);
+	position5(1);
 	refresh();
 	getch();
 	endwin();
@@ -38,9 +46,9 @@ int main(){
 
 void position1(int number){
 	move(7,4);
-	printw("_____________________");
+	printw("______________________");
 	move(18,4);
-	printw("_____________________");
+	printw("______________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,4);
 		printw("|");
@@ -55,9 +63,9 @@ void position1(int number){
 
 void position2(int number){
 	move(7,29);
-	printw("_____________________");
+	printw("______________________");
 	move(18,29);
-	printw("_____________________");
+	printw("______________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,29);
 		printw("|");
@@ -72,9 +80,9 @@ void position2(int number){
 
 void position3(int number){
 	move(7,56);
-	printw("_____________________");
+	printw("______________________");
 	move(18,56);
-	printw("_____________________");
+	printw("______________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,56);
 		printw("|");
@@ -89,9 +97,9 @@ void position3(int number){
 
 void position4(int number){
 	move(7,83);
-	printw("_____________________");
+	printw("______________________");
 	move(18,83);
-	printw("_____________________");
+	printw("______________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,83);
 		printw("|");
@@ -106,9 +114,9 @@ void position4(int number){
 
 void position5(int number){
 	move(7,110);
-	printw("_____________________");
+	printw("______________________");
 	move(18,110);
-	printw("_____________________");
+	printw("______________________");
 	for(int i = 8; i <= 18; i++){
 		move(i,110);
 		printw("|");
@@ -228,10 +236,57 @@ void cards(int number, int x, int y){
 	}
 }
 
+void typeOfCard(int type){
+	if(type == 1){
+		printw("    *    \n");
+		printw("   * *   \n");
+		printw("  *   *  \n");
+		printw(" *     * \n");
+		printw("* *   * *\n");
+		printw(" * * * * \n");
+		printw("   * *   \n");
+		printw("   ***     ");
+	} else if (type == 2){
+		printw(" ***   *** \n");
+		printw("*   * *   *\n");
+		printw("*    *    *\n");
+		printw(" *       * \n");
+		printw("  *     *  \n");
+		printw("   *   *   \n");
+		printw("    * *    \n");
+		printw("     *       ");
+	} else if (type == 3){
+		printw("    *    \n");
+		printw("   * *   \n");
+		printw("  *   *  \n");
+		printw(" *     * \n");
+		printw("*       *\n");
+		printw(" *     * \n");
+		printw("  *   *  \n");
+		printw("   * *   \n");
+		printw("    *      ");
+	} else if (type == 4){
+		printw("         \n");
+		printw("         \n");
+		printw("  * * *  \n");
+		printw(" * * * * \n");
+		printw(" *     *\n");
+		printw("  *   * \n");
+		printw("   * *   \n");
+		printw("   * *   \n");
+		printw("   ***     ");
+	}
+}
+/*
 int game(bool start){
 	if (start){
 		int card = rand %14;
 		srand(time(0));
 		return card;
 	}
+}*/
+
+void deck(){
+	int** deckOfCards = new int[][];
+	
 }
