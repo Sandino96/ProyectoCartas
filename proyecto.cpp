@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 using namespace std;
-WINDOW *win; //manejo de una unica pantalla completa
+WINDOW *win;
 
 void IniVideo(){
 	win = initscr();
@@ -22,76 +22,141 @@ void linesUpAndDown();
 void linesOfSides();
 void cards(int,int,int);
 void typeOfCard(int,int,int);
+bool identifyCard(int**, int, int);
 void position1(int,int);
 void position2(int,int);
 void position3(int,int);
 void position4(int,int);
 void position5(int,int);
-int game(int);
+int** newDeck(int**);
+void game(int, int**);
 double bet(double);
-bool pairOfJacksOrBetter(int,int,int,int,int);
+bool pairOfJacksOrBetter(int,int,int,int,int); 
+bool threeOfAKind(int,int,int,int,int);
+bool flush(int,int,int,int,int);
+bool poker(int,int,int,int,int);
+bool fullHouse(int,int,int,int,int);
 
-int main(){	
+int main(){
 	IniVideo();
+	int** deck = new int*[4];
+	for (int i = 0; i < 4; i++){
+		deck[i] = new int[13];
+	}
+	int** deckOfCards = new int*[4];
+	for (int i = 0; i < 4; i++){
+		deckOfCards[i] = new int[13];
+	}
+	deckOfCards = newDeck(deck);
 	init_pair(1,COLOR_WHITE,COLOR_BLACK);
 	bkgd(COLOR_PAIR(1));
 	move(3,56);
 	printw("WELCOME TO SANDINO'S VIDEO POKER");
 	move(4,60);
 	printw("MAY THE LUCK BE WITH YOU");
-	position1(0,0);
-	position2(0,0);
-	position3(0,0);
-	position4(0,0);
-	position5(0,0);
+	position1(13,5);
+	position2(13,5);
+	position3(13,5);
+	position4(13,5);
+	position5(13,5);
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 13; j++){
+			printw("[");
+			printw("%d",deckOfCards[i][j]);
+			printw("] ");
+		}
+		printw("\n");
+	}
 	int key;
-	game(key);
+	game(key,deckOfCards);
 	endwin();
+	delete[] deckOfCards;
+	deckOfCards = NULL;
+	delete[] deck;
+	deck = NULL;
 	return 0;
 }
 
-int game(int key){
+void game(int key, int** deck){
 	while((key = getch()) != 27){
 		srand(time(0));
 		int firstCard, typeOfFirstCard;
-		firstCard = 1 + (rand() % 12);
-		typeOfFirstCard = 1 + (rand() % 3);
+		firstCard = (rand() % 13);
+		typeOfFirstCard = (rand() % 4);
 		int secondCard, typeOfSecondCard;
-		secondCard = 1 + (rand() % 12);
-		typeOfSecondCard = 1 + (rand() % 3);
+		secondCard = (rand() % 13);
+		typeOfSecondCard = (rand() % 4);
 		int thirdCard, typeOfThirdCard;
-		thirdCard = 1 + (rand() % 12);
-		typeOfThirdCard = 1 + (rand() % 3);
+		thirdCard = (rand() % 13);
+		typeOfThirdCard = (rand() % 4);
 		int fourthCard, typeOfFourthCard;
-		fourthCard = 1 + (rand() % 12);
-		typeOfFourthCard = 1 + (rand() % 3);
+		fourthCard = (rand() % 13);
+		typeOfFourthCard = (rand() % 4);
 		int fifthCard, typeOfFifthCard;
-		fifthCard = 1 + (rand() % 12);
-		typeOfFifthCard = 1 + (rand() % 3);
-		if(firstCard == secondCard && typeOfFirstCard == typeOfSecondCard){
-
+		fifthCard = (rand() % 13);
+		typeOfFifthCard = (rand() % 4);
+		if (identifyCard(deck, firstCard, typeOfFirstCard)){
+			position1(firstCard,typeOfFirstCard);
+			deck[typeOfFirstCard][firstCard] = 14;
 		}
-		position1(firstCard,typeOfFirstCard);
-		position2(secondCard,typeOfSecondCard);
-		position3(thirdCard,thirdCard);
-		position4(fourthCard,typeOfFourthCard);
-		position5(fifthCard,fifthCard);
-		double money;
-		money = 10000;
-		move(2,10);
-		printw("%d",money);
-		if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+		if (identifyCard(deck, secondCard, typeOfSecondCard)){
+			position2(secondCard,typeOfSecondCard);
+			deck[typeOfSecondCard][secondCard] = 14;
+		}
+		if (identifyCard(deck, thirdCard, typeOfThirdCard)){
+			position3(thirdCard,typeOfThirdCard);
+			deck[typeOfThirdCard][thirdCard] = 14;
+		}
+		if (identifyCard(deck, fourthCard, typeOfFourthCard)){
+			position4(fourthCard,typeOfFourthCard);
+			deck[typeOfFourthCard][fourthCard] = 14;
+		}
+		if (identifyCard(deck, fifthCard, typeOfFifthCard)){
+			position5(fifthCard,typeOfFifthCard);
+			deck[typeOfFifthCard][fifthCard] = 14;
+			for (int i = 0; i < 4; i++){
+				for (int j = 0; j < 13; j++){
+					printw("[");
+					printw("%d",deck[i][j]);
+					printw("] ");
+				}
+				printw("\n");
+			}
+		}
+		if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+			move(6,62);
+			printw("YOU WIN WITH POKER");
+		} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+			move(6,60);
+			printw("YOU WIN WITH FULL HOUSE");
+		} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
+			move(6,62);
+			printw("YOU WIN WITH FLUSH");
+		} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+			move(6,58);
+			printw("YOU WIN WITH THREE OF A KIND");
+		} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 			move(6,62);
 			printw("YOU WIN WITH PAIR");
 		} else {
-			move(6,62);
-			printw("                 ");			
+			move(6,58);
+			printw("        YOU LOSE :(         ");
 		}
 		refresh();
 	}
 }
 
-void position1(int numberOfCard, int type){
+bool identifyCard(int** deck, int card, int type){
+	if(deck[type][card] != 14){
+		return TRUE;
+	} else {
+		card = (rand() % 13);
+		type = (rand() % 4);
+		return identifyCard(deck,card,type);
+	}
+}
+
+void position1(int number, int type){
 	move(7,4);
 	printw("_________________________");
 	move(21,4);
@@ -105,7 +170,7 @@ void position1(int numberOfCard, int type){
 		printw("|");
 	}
 	int x = 9, y = 7;
-	cards(numberOfCard,x,y);
+	cards(number,x,y);
 	x = 9; y = 17;
 	typeOfCard(type,x,y);
 }
@@ -187,7 +252,7 @@ void position5(int number, int type){
 }
 
 void cards(int number, int x, int y){
-	if (number == 0){
+	if (number == 13){
 		move(x,y);
 		printw("*******************");
 		move(x+1,y);
@@ -212,32 +277,57 @@ void cards(int number, int x, int y){
 		printw("*******************");
 		move(x+11,y);
 		printw("*******************");
+	} else if (number == 0){
+		move(x,y);
+		printw("********           ");
+		move(x+1,y);
+		printw("*      *           ");
+		move(x+2,y);
+		printw("*      *           ");
+		move(x+3,y);
+		printw("*      *           ");
+		move(x+4,y);
+		printw("*      *           ");
+		move(x+5,y);
+		printw("********           ");
+		move(x+6,y);
+		printw("*      *           ");
+		move(x+7,y);
+		printw("*      *           ");
+		move(x+8,y);
+		printw("*      *           ");
+		move(x+9,y);
+		printw("*      *           ");
+		move(x+10,y);
+		printw("*      *           ");
+		move(x+11,y);
+		printw("*      *           ");
 	} else if (number == 1){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+2,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+3,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+4,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+7,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+8,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+9,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+10,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+11,y);
-		printw("*      *           ");
-	} else if (number == 2){
+		printw("********           ");
+	} else if(number == 2){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
@@ -251,28 +341,28 @@ void cards(int number, int x, int y){
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+7,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+8,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+9,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+10,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+11,y);
 		printw("********           ");
 	} else if(number == 3){
 		move(x,y);
-		printw("********           ");
+		printw("*      *           ");
 		move(x+1,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+2,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+3,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+4,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
@@ -286,18 +376,18 @@ void cards(int number, int x, int y){
 		move(x+10,y);
 		printw("       *           ");
 		move(x+11,y);
-		printw("********           ");
+		printw("       *           ");
 	} else if(number == 4){
 		move(x,y);
-		printw("*      *           ");
+		printw("********           ");
 		move(x+1,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+2,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+3,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+4,y);
-		printw("*      *           ");
+		printw("*                  ");
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
@@ -311,7 +401,7 @@ void cards(int number, int x, int y){
 		move(x+10,y);
 		printw("       *           ");
 		move(x+11,y);
-		printw("       *           ");
+		printw("********           ");
 	} else if(number == 5){
 		move(x,y);
 		printw("********           ");
@@ -326,67 +416,67 @@ void cards(int number, int x, int y){
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+7,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+8,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+9,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+10,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+11,y);
 		printw("********           ");
 	} else if(number == 6){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+2,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+3,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+4,y);
-		printw("*                  ");
+		printw("       *           ");
 		move(x+5,y);
-		printw("********           ");
+		printw("       *           ");
 		move(x+6,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+7,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+8,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+9,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+10,y);
-		printw("*      *           ");
+		printw("       *           ");
 		move(x+11,y);
-		printw("********           ");
+		printw("       *           ");
 	} else if(number == 7){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+2,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+3,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+4,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+5,y);
-		printw("       *           ");
+		printw("********           ");
 		move(x+6,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+7,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+8,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+9,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+10,y);
-		printw("       *           ");
+		printw("*      *           ");
 		move(x+11,y);
-		printw("       *           ");
+		printw("********           ");
 	} else if(number == 8){
 		move(x,y);
 		printw("********           ");
@@ -401,31 +491,6 @@ void cards(int number, int x, int y){
 		move(x+5,y);
 		printw("********           ");
 		move(x+6,y);
-		printw("*      *           ");
-		move(x+7,y);
-		printw("*      *           ");
-		move(x+8,y);
-		printw("*      *           ");
-		move(x+9,y);
-		printw("*      *           ");
-		move(x+10,y);
-		printw("*      *           ");
-		move(x+11,y);
-		printw("********           ");
-	} else if(number == 9){
-		move(x,y);
-		printw("********           ");
-		move(x+1,y);
-		printw("*      *           ");
-		move(x+2,y);
-		printw("*      *           ");
-		move(x+3,y);
-		printw("*      *           ");
-		move(x+4,y);
-		printw("*      *           ");
-		move(x+5,y);
-		printw("********           ");
-		move(x+6,y);
 		printw("       *           ");
 		move(x+7,y);
 		printw("       *           ");
@@ -437,7 +502,7 @@ void cards(int number, int x, int y){
 		printw("       *           ");
 		move(x+11,y);
 		printw("********           ");
-	} else if (number == 10){
+	} else if (number == 9){
 		move(x,y);
 		printw("  * *****          ");
 		move(x+1,y);
@@ -462,7 +527,7 @@ void cards(int number, int x, int y){
 		printw("  * *   *          ");
 		move(x+11,y);
 		printw("  * *****          ");
-	} else if(number == 11){
+	} else if(number == 10){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
@@ -487,7 +552,7 @@ void cards(int number, int x, int y){
 		printw("    *              ");
 		move(x+11,y);
 		printw("*****              ");
-	} else if(number == 12){
+	} else if(number == 11){
 		move(x,y);
 		printw("********           ");
 		move(x+1,y);
@@ -512,7 +577,7 @@ void cards(int number, int x, int y){
 		printw("********           ");
 		move(x+11,y);
 		printw("        *          ");
-	} else if (number == 13){
+	} else if (number == 12){
 		move(x,y);
 		printw("*      *           ");
 		move(x+1,y);
@@ -541,7 +606,7 @@ void cards(int number, int x, int y){
 }
 
 void typeOfCard(int type, int x, int y){
-	if(type == 0){
+	if(type == 5){
 		move(x,y);
 		printw("***********");
 		move(x+1,y);
@@ -566,8 +631,7 @@ void typeOfCard(int type, int x, int y){
 		printw("***********");
 		move(x+11,y);
 		printw("***********");
-	}
-	if(type == 1){
+	} else if(type == 0){
 		move(x,y);
 		printw("           ");
 		move(x+1,y);
@@ -592,7 +656,7 @@ void typeOfCard(int type, int x, int y){
 		printw("    ***    ");
 		move(x+11,y);
 		printw("           ");
-	} else if (type == 2){
+	} else if (type == 1){
 		move(x,y);
 		printw("           ");
 		move(x+1,y);
@@ -617,7 +681,7 @@ void typeOfCard(int type, int x, int y){
 		printw("           ");
 		move(x+11,y);
 		printw("           ");
-	} else if (type == 3){
+	} else if (type == 2){
 		move(x,y);
 		printw("     *     ");
 		move(x+1,y);
@@ -642,7 +706,7 @@ void typeOfCard(int type, int x, int y){
 		printw("     *     ");
 		move(x+11,y);
 		printw("           ");
-	} else if (type == 4){
+	} else if (type == 3){
 		move(x,y);
 		printw("     *     ");
 		move(x+1,y);
@@ -670,6 +734,15 @@ void typeOfCard(int type, int x, int y){
 	}
 }
 
+int** newDeck(int** deck){
+	for (int row = 0; row < 4; row++){
+		for (int column = 0; column < 13; column++){
+			deck[row][column] = column;
+		}
+	}
+	return deck;
+}
+
 double bet(double money){
 	ofstream entrada;
 	entrada.open("bet.txt",ios::out);
@@ -683,41 +756,84 @@ double bet(double money){
 	return money;
 }
 
-bool pairOfJacksOrBetter(int first,int second,int third,int fourth,int fifth){
-	if((first == 11 && second == 11) || (first == 11 && third == 11) || (first == 11 && fourth == 11) || (first == 11 && fifth == 11)){
+bool pairOfJacksOrBetter(int first, int second, int third, int fourth, int fifth){
+	if((first == 10 && second == 10) || (first == 10 && third == 10) || (first == 10 && fourth == 10) || (first == 10 && fifth == 10)){
+		return TRUE;
+	} else if((first == 11 && second == 11) || (first == 11 && third == 11) || (first == 11 && fourth == 11) || (first == 11 && fifth == 11)){
 		return TRUE;
 	} else if((first == 12 && second == 12) || (first == 12 && third == 12) || (first == 12 && fourth == 12) || (first == 12 && fifth == 12)){
 		return TRUE;
-	} else if((first == 13 && second == 13) || (first == 13 && third == 13) || (first == 13 && fourth == 13) || (first == 13 && fifth == 13)){
+	} else if((first == 0 && second == 0) || (first == 0 && third == 0) || (first == 0 && fourth == 0) || (first == 0 && fifth == 0)){
 		return TRUE;
-	} else if((first == 1 && second == 1) || (first == 1 && third == 1) || (first == 1 && fourth == 1) || (first == 1 && fifth == 1)){
+	} else if((second == 10 && third == 10) || (second == 10 && fourth == 10) || (second == 10 && fifth == 10)){
 		return TRUE;
 	} else if((second == 11 && third == 11) || (second == 11 && fourth == 11) || (second == 11 && fifth == 11)){
 		return TRUE;
 	} else if((second == 12 && third == 12) || (second == 12 && fourth == 12) || (second == 12 && fifth == 12)){
 		return TRUE;
-	} else if((second == 13 && third == 13) || (second == 13 && fourth == 13) || (second == 13 && fifth == 13)){
+	} else if((second == 0 && third == 0) || (second == 0 && fourth == 0) || (second == 0 && fifth == 0)){
 		return TRUE;
-	} else if((second == 1 && third == 1) || (second == 1 && fourth == 1) || (second == 1 && fifth == 1)){
+	} else if((third == 10 && fourth == 10) || (third == 10 && fifth == 10)){
 		return TRUE;
 	} else if((third == 11 && fourth == 11) || (third == 11 && fifth == 11)){
 		return TRUE;
 	} else if((third == 12 && fourth == 12) || (third == 12 && fifth == 12)){
 		return TRUE;
-	} else if((third == 13 && fourth == 13) || (third == 13 && fifth == 13)){
+	} else if((third == 0 && fourth == 0) || (third == 0 && fifth == 0)){
 		return TRUE;
-	} else if((third == 1 && fourth == 1) || (third == 1 && fifth == 1)){
+	} else if (fourth == 10 && fifth == 10){
 		return TRUE;
 	} else if (fourth == 11 && fifth == 11){
 		return TRUE;
 	} else if (fourth == 12 && fifth == 12){
 		return TRUE;
-	} else if (fourth == 13 && fifth == 13){
-		return TRUE;
-	} else if (fourth == 1 && fifth == 1){
+	} else if (fourth == 0 && fifth == 0){
 		return TRUE;
 	} else {
 		return FALSE;
 	}
 }
 
+bool threeOfAKind(int first, int second, int third, int fourth, int fifth){
+	if((first == second && first == third) || (first == second && first == fourth) || (first == second && first == fifth) || (first == third && first == fourth) || (first == third && first == fifth) || (first == fourth && first == fifth)){
+		return TRUE;
+	} else if ((second == third) && (second == fourth) || (second == third) && (second == fifth) || (second == fourth) && (second == fifth)){
+		return TRUE;
+	} else if((third == fourth) && (third == fifth)){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+bool flush(int first, int second, int third, int fourth, int fifth){
+	if((first == second) && (first == third) && (first == fourth) && (first == fifth)){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+bool poker(int first, int second, int third, int fourth, int fifth){
+	if (((first == second) && (first == third) && (first == fourth)) || ((first == second) && (first == third) && (first == fifth))){
+		return TRUE;
+	} else if (((second == third) && (second == fourth) && (second == fifth)) || ((second == first) && (second == fourth) && (second == fifth))){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+bool fullHouse(int first, int second, int third, int fourth, int fifth){
+	if (first == second && (third == fourth && third == fifth) || (first == third && (second == fourth && second == fifth)) || (first == fourth && (second == third && second == fifth)) || (first == fifth && (second == third && second == fourth))){
+		return TRUE;
+	} else if (second == third && (first == fourth && first == fifth) || (second == fourth && (first == third && first == fifth)) || (second == fifth && (first == third && first == fourth))){
+		return TRUE;
+	} else if (third == fourth && (first == second && first == fifth) || (third == fifth && (first == second && first == fourth))){
+		return TRUE;
+	} else if (fourth == fifth && (first == second && first == third)){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
