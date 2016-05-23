@@ -49,7 +49,7 @@ bool straight(int,int,int,int,int);
 bool royalFlush(int,int,int,int,int,int,int,int,int,int);
 bool straightFlush(int,int,int,int,int,int,int,int,int,int);
 
-int main(){
+int main(int argc, char*argv[]){
 	IniVideo();
 	echo();
 	int** deck = new int*[4];
@@ -61,7 +61,7 @@ int main(){
 	for (int i = 0; i < 2; i++){
 		cardsOnTable[i] = new int[5];
 	}
-	int* chanceCards = new int[5];
+	int* chanceCards = new int[10];
 	int betTemporal = 0;
 	char digit;
 	int bet = 0;
@@ -72,7 +72,11 @@ int main(){
 	int fourthCard, typeOfFourthCard;
 	int fifthCard, typeOfFifthCard;
 	char key;
+	echo();
+	printw("Press any key to continue...");
 	while((key = getch()) != 27) {
+		
+		noecho();
 		betTemporal = 0;
 		digit = '\0';
 		bet = 0;
@@ -120,6 +124,8 @@ int main(){
 			}
 			noecho();
 			bet = atoi(money.c_str());
+			betTemporal = betTemporal - bet;
+			virtualBank(betTemporal);
 			srand(time(0));
 			firstCard = (rand() % 13);
 			typeOfFirstCard = (rand() % 4);
@@ -215,61 +221,60 @@ int main(){
 					}
 				}
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 250;
+					betTemporal = betTemporal + (bet * 250);
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 50;
+					betTemporal = betTemporal + (bet * 50);
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 25;
+					betTemporal = betTemporal +(bet * 25);
 					move(6,62);
 					printw("YOU WIN WITH POKER");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 9;
+					betTemporal = betTemporal + (bet * 9);
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 6;
+					betTemporal = betTemporal + (bet * 6);
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 4;
+					betTemporal = betTemporal + (bet * 4);
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 3;
+					betTemporal = betTemporal + (bet * 3);
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 2;
+					betTemporal = betTemporal + (bet * 2);
 					move(6,62);
 					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet;
+					betTemporal = betTemporal + bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
-					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
 					betOn(betTemporal);
@@ -277,61 +282,59 @@ int main(){
 				}
 			} else if (decision == 110 || decision == 78) {
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 250;
+					betTemporal = betTemporal + (bet * 250);
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 50;
+					betTemporal = betTemporal + (bet * 50);
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 25;
+					betTemporal = betTemporal +(bet * 25);
 					move(6,62);
 					printw("YOU WIN WITH POKER");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 9;
+					betTemporal = betTemporal + (bet * 9);
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 6;
+					betTemporal = betTemporal + (bet * 6);
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 4;
+					betTemporal = betTemporal + (bet * 4);
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 3;
+					betTemporal = betTemporal + (bet * 3);
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 2;
+					betTemporal = betTemporal + (bet * 2);
 					move(6,62);
 					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
-					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
 					betOn(betTemporal);
@@ -358,6 +361,8 @@ int main(){
 			}
 			noecho();
 			bet = atoi(money.c_str());
+			betTemporal = betTemporal - bet;
+			virtualBank(betTemporal);
 			srand(time(0));
 			firstCard = (rand() % 13);
 			typeOfFirstCard = (rand() % 4);
@@ -452,61 +457,60 @@ int main(){
 					}
 				}
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 250;
+					betTemporal = betTemporal + (bet * 250);
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 50;
+					betTemporal = betTemporal + (bet * 50);
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 25;
+					betTemporal = betTemporal +(bet * 25);
 					move(6,62);
 					printw("YOU WIN WITH POKER");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 9;
+					betTemporal = betTemporal + (bet * 9);
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 6;
+					betTemporal = betTemporal + (bet * 6);
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 4;
+					betTemporal = betTemporal + (bet * 4);
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 3;
+					betTemporal = betTemporal + (bet * 3);
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 2;
+					betTemporal = betTemporal + (bet * 2);
 					move(6,62);
 					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet;
+					betTemporal = betTemporal + bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
-					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
 					betOn(betTemporal);
@@ -514,61 +518,60 @@ int main(){
 				}
 			} else if (decision == 110 || decision == 78) {
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 250;
+					betTemporal = betTemporal + (bet * 250);
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 50;
+					betTemporal = betTemporal + (bet * 50);
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 25;
+					betTemporal = betTemporal +(bet * 25);
 					move(6,62);
 					printw("YOU WIN WITH POKER");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 9;
+					betTemporal = betTemporal + (bet * 9);
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
-					betTemporal += bet * 6;
+					betTemporal = betTemporal + (bet * 6);
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 4;
+					betTemporal = betTemporal + (bet * 4);
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 3;
+					betTemporal = betTemporal + (bet * 3);
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet * 2;
+					betTemporal = betTemporal + (bet * 2);
 					move(6,62);
 					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
-					betTemporal += bet;
+					betTemporal = betTemporal + bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
-					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
 					betOn(betTemporal);
@@ -1227,7 +1230,7 @@ void rulesOfBet(){
 
 void betOn(int money){
 	ofstream entrada;
-	entrada.open("bet.txt",ios::out);
+	entrada.open("bet.txt",ios::out|ios::trunc);
 	if(!entrada.fail()){
 		entrada << money << endl;
 		entrada.close();
@@ -1239,6 +1242,7 @@ int betIn(){
 	ifstream salida;
 	salida.open("bet.txt",ios::in);
 	salida >> money;
+	salida.close();
 	return money;
 }
 
@@ -1301,7 +1305,7 @@ bool twoPair(int first, int second, int third, int fourth, int fifth){
 bool threeOfAKind(int first, int second, int third, int fourth, int fifth){
 	if((first == second && first == third) || (first == second && first == fourth) || (first == second && first == fifth) || (first == third && first == fourth) || (first == third && first == fifth) || (first == fourth && first == fifth)){
 		return TRUE;
-	} else if ((second == third) && (second == fourth) || (second == third) && (second == fifth) || (second == fourth) && (second == fifth)){
+	} else if (((second == third) && (second == fourth)) || ((second == third) && (second == fifth)) || ((second == fourth) && (second == fifth))){
 		return TRUE;
 	} else if((third == fourth) && (third == fifth)){
 		return TRUE;
@@ -1329,11 +1333,11 @@ bool poker(int first, int second, int third, int fourth, int fifth){
 }
 
 bool fullHouse(int first, int second, int third, int fourth, int fifth){
-	if (first == second && (third == fourth && third == fifth) || (first == third && (second == fourth && second == fifth)) || (first == fourth && (second == third && second == fifth)) || (first == fifth && (second == third && second == fourth))){
+	if ((first == second && (third == fourth && third == fifth)) || (first == third && (second == fourth && second == fifth)) || (first == fourth && (second == third && second == fifth)) || (first == fifth && (second == third && second == fourth))){
 		return TRUE;
-	} else if (second == third && (first == fourth && first == fifth) || (second == fourth && (first == third && first == fifth)) || (second == fifth && (first == third && first == fourth))){
+	} else if ((second == third && (first == fourth && first == fifth)) || (second == fourth && (first == third && first == fifth)) || (second == fifth && (first == third && first == fourth))){
 		return TRUE;
-	} else if (third == fourth && (first == second && first == fifth) || (third == fifth && (first == second && first == fourth))){
+	} else if ((third == fourth && (first == second && first == fifth)) || (third == fifth && (first == second && first == fourth))){
 		return TRUE;
 	} else if (fourth == fifth && (first == second && first == third)){
 		return TRUE;
