@@ -40,6 +40,7 @@ int** newDeck(int**);
 void betOn(int);
 int betIn();
 bool pairOfJacksOrBetter(int,int,int,int,int); 
+bool twoPair(int,int,int,int,int);
 bool threeOfAKind(int,int,int,int,int);
 bool flush(int,int,int,int,int);
 bool poker(int,int,int,int,int);
@@ -60,7 +61,7 @@ int main(){
 	for (int i = 0; i < 2; i++){
 		cardsOnTable[i] = new int[5];
 	}
-	int** cardsSelected;
+	int* chanceCards = new int[5];
 	int betTemporal = 0;
 	char digit;
 	int bet = 0;
@@ -87,10 +88,11 @@ int main(){
 		position4(13,5);
 		position5(13,5);
 		virtualBank(0);
+		rulesOfBet();
 		move(24,50);
 		printw("NEW GAME  (TAP ===> N or n)");
 		move(26,50);
-		printw("LOAD GAME (TAP ===> L or l)           ");
+		printw("LOAD GAME (TAP ===> L or l)                                        ");
 		move(28,50);
 		printw("EXIT      (TAP ===> ESC)");
 		move(30,50);
@@ -129,6 +131,16 @@ int main(){
 			typeOfFourthCard = (rand() % 4)	;
 			fifthCard = (rand() % 13);
 			typeOfFifthCard = (rand() % 4);
+			cardsOnTable[0][0] = firstCard;
+			cardsOnTable[1][0] = typeOfFirstCard;
+			cardsOnTable[0][1] = secondCard;
+			cardsOnTable[1][1] = typeOfSecondCard;
+			cardsOnTable[0][2] = thirdCard;
+			cardsOnTable[1][2] = typeOfThirdCard;
+			cardsOnTable[0][3] = fourthCard;
+			cardsOnTable[1][3] = typeOfFourthCard;
+			cardsOnTable[0][4] = fifthCard;
+			cardsOnTable[1][4] = typeOfFifthCard;
 			if (identifyCard(deck, firstCard, typeOfFirstCard)){
 				position1(firstCard,typeOfFirstCard);
 				deck[typeOfFirstCard][firstCard] = 14;
@@ -149,136 +161,117 @@ int main(){
 				position5(fifthCard,typeOfFifthCard);
 				deck[typeOfFifthCard][fifthCard] = 14;
 			}
-			cardsOnTable[0][0] = firstCard;
-			cardsOnTable[1][0] = typeOfFirstCard;
-			cardsOnTable[0][1] = secondCard;
-			cardsOnTable[1][1] = typeOfSecondCard;
-			cardsOnTable[0][2] = thirdCard;
-			cardsOnTable[1][2] = typeOfThirdCard;
-			cardsOnTable[0][3] = fourthCard;
-			cardsOnTable[1][3] = typeOfFourthCard;
-			cardsOnTable[0][4] = fifthCard;
-			cardsOnTable[1][4] = typeOfFifthCard;
-			int hola = 0;
-			for (int i = 0; i < 2; i++){
-				for (int j = 0; j < 5; j++){
-					hola = cardsOnTable[i][j];
-					move(4,10);
-					printw("%d",hola);
-				}
-			}
 			move(26,50);
 			echo();
 			char decision;
-			printw("Do you wish to change any card[Y/N]: ");
+			printw("Do you wish to hold any card[Y/N]: ");
 			decision = getch();
 			if(decision == 89 || decision == 121){
-				/*int decisionNumber;
-				char* changes = new char[5];
-				int i = 0;
 				move(26,50);
-				printw("One by One");
-				decision = 108;
-				for (int i = 0; changes[i]; i++){
-					if(changes[i] == 49){
+				char numbers;
+				int sizeChangeCards = 0;
+				printw("Cards you wish to hold [Enter the numbers in this format = 123]: ");
+				while((numbers=getch()) != 10){
+					chanceCards[sizeChangeCards] = numbers;
+					sizeChangeCards++;
+				}
+				noecho();
+				for (int i = 0; chanceCards[i] ; i++){
+					if (chanceCards[i] == 49){
+						firstCard = (rand() % 13);
+						typeOfFirstCard = (rand() % 4);
 						if (identifyCard(deck, firstCard, typeOfFirstCard)){
-							firstCard = (rand() % 13);
-							typeOfFirstCard = (rand() % 4);
 							position1(firstCard,typeOfFirstCard);
-							deck[typeOfFirstCard][firstCard] = 14;
+							deck[firstCard][typeOfFirstCard] = 14;
 						}
-					} else if (changes[i] == 50){
+					} else if (chanceCards[i] == 50){
+						secondCard = (rand() % 13);
+						typeOfSecondCard = (rand() % 4);
 						if (identifyCard(deck, secondCard, typeOfSecondCard)){
-							secondCard = (rand() % 13);
-							typeOfSecondCard = (rand() % 4);
 							position2(secondCard,typeOfSecondCard);
 							deck[typeOfSecondCard][secondCard] = 14;
 						}
-					} else if (changes[i] == 51){
+					} else if (chanceCards[i] == 51){
+						thirdCard = (rand() % 13);
+						typeOfThirdCard = (rand() % 4);
 						if (identifyCard(deck, thirdCard, typeOfThirdCard)){
-							thirdCard = (rand() % 13);
-							typeOfThirdCard = (rand() % 4);
 							position3(thirdCard,typeOfThirdCard);
 							deck[typeOfThirdCard][thirdCard] = 14;
 						}
-					} else if (changes[i] == 52){
+					} else if (chanceCards[i] == 52){
+						fourthCard = (rand() % 13);
+						typeOfFourthCard = (rand() % 4)	;
 						if (identifyCard(deck, fourthCard, typeOfFourthCard)){
-							fourthCard = (rand() % 13);
-							typeOfFourthCard = (rand() % 4)	;			
 							position4(fourthCard,typeOfFourthCard);
 							deck[typeOfFourthCard][fourthCard] = 14;
 						}
-					} else if (changes[i] == 53){
-						if (identifyCard(deck, fifthCard, typeOfFifthCard)){
-							fifthCard = (rand() % 13);
-							typeOfFifthCard = (rand() % 4);
+					} else if (chanceCards[i] == 53){
+						fifthCard = (rand() % 13);
+						typeOfFifthCard = (rand() % 4);
+						if (identifyCard(deck, fifthCard, typeOfFifthCard)){							
 							position5(fifthCard,typeOfFifthCard);
 							deck[typeOfFifthCard][fifthCard] = 14;
 						}
 					}
 				}
-				delete [] changes;*/
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 250;
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 50;
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 25;
 					move(6,62);
 					printw("YOU WIN WITH POKER");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 9;
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 6;
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 4;
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 3;
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
+				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+					betTemporal += bet * 2;
+					move(6,62);
+					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
 					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				}
@@ -287,63 +280,60 @@ int main(){
 					betTemporal += bet * 250;
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 50;
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 25;
 					move(6,62);
 					printw("YOU WIN WITH POKER");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 9;
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 6;
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 4;
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 3;
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
+				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+					betTemporal += bet * 2;
+					move(6,62);
+					printw("YOU WIN WITH TWO PAIR");
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				} else {
 					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
-					move(30,50);
 					betOn(betTemporal);
 					virtualBank(betIn());
 				}
@@ -379,6 +369,16 @@ int main(){
 			typeOfFourthCard = (rand() % 4)	;
 			fifthCard = (rand() % 13);
 			typeOfFifthCard = (rand() % 4);
+			cardsOnTable[0][0] = firstCard;
+			cardsOnTable[1][0] = typeOfFirstCard;
+			cardsOnTable[0][1] = secondCard;
+			cardsOnTable[1][1] = typeOfSecondCard;
+			cardsOnTable[0][2] = thirdCard;
+			cardsOnTable[1][2] = typeOfThirdCard;
+			cardsOnTable[0][3] = fourthCard;
+			cardsOnTable[1][3] = typeOfFourthCard;
+			cardsOnTable[0][4] = fifthCard;
+			cardsOnTable[1][4] = typeOfFifthCard;
 			if (identifyCard(deck, firstCard, typeOfFirstCard)){
 				position1(firstCard,typeOfFirstCard);
 				deck[typeOfFirstCard][firstCard] = 14;
@@ -390,7 +390,7 @@ int main(){
 			if (identifyCard(deck, thirdCard, typeOfThirdCard)){
 				position3(thirdCard,typeOfThirdCard);
 				deck[typeOfThirdCard][thirdCard] = 14;
-				}
+			}
 			if (identifyCard(deck, fourthCard, typeOfFourthCard)){
 				position4(fourthCard,typeOfFourthCard);
 				deck[typeOfFourthCard][fourthCard] = 14;
@@ -402,69 +402,50 @@ int main(){
 			move(26,50);
 			echo();
 			char decision;
-			printw("Do you wish to change any card[Y/N]: ");
+			printw("Do you wish to hold any card[Y/N]: ");
 			decision = getch();
 			if(decision == 89 || decision == 121){
-				char decisionNumber;
-				char changes[5];
-				int i = 0;
 				move(26,50);
-				printw("One by One");
-				move(28,50);
-				printw("Card you wish to change(only cards from 1 to 5): ");
-				while((decisionNumber = getch() != 10)){
-					if((decisionNumber > 48 && decisionNumber < 54)){
-						changes[i] = decisionNumber;
-						i++;
-					}
+				char numbers;
+				int sizeChanceCards = 0;
+				printw("Cards you wish to hold [Enter the numbers in this format = 123]: ");
+				while((numbers=getch()) != 10){
+					chanceCards[sizeChanceCards] = numbers;
+					sizeChanceCards++;
 				}
-				move(28,50);
-				printw("Do you wish to change another card[Y/N]: ");
-				decision = getch();
-				if (decision != 110 || decisionNumber != 78){
-					move(28,50);
-					printw("Card you wish to change(only cards from 1 to 5): ");
-					while((decisionNumber = getch() != 10)){
-						if((decisionNumber > 48 && decisionNumber < 54)){
-							changes[i] = decisionNumber;
-							i++;
-						}
-					}
-				}
-				noecho();
-				for (int i = 0; changes[i]; i++){
-					if(changes[i] == 49){
+				for (int i = 0; chanceCards[i] ; i++){
+					if (chanceCards[i] == 49){
+						firstCard = (rand() % 13);
+						typeOfFirstCard = (rand() % 4);
 						if (identifyCard(deck, firstCard, typeOfFirstCard)){
-							firstCard = (rand() % 13);
-							typeOfFirstCard = (rand() % 4);
 							position1(firstCard,typeOfFirstCard);
-							deck[typeOfFirstCard][firstCard] = 14;
+							deck[firstCard][typeOfFirstCard] = 14;
 						}
-					} else if (changes[i] == 50){
+					} else if (chanceCards[i] == 50){
+						secondCard = (rand() % 13);
+						typeOfSecondCard = (rand() % 4);
 						if (identifyCard(deck, secondCard, typeOfSecondCard)){
-							secondCard = (rand() % 13);
-							typeOfSecondCard = (rand() % 4);
 							position2(secondCard,typeOfSecondCard);
 							deck[typeOfSecondCard][secondCard] = 14;
 						}
-					} else if (changes[i] == 51){
+					} else if (chanceCards[i] == 51){
+						thirdCard = (rand() % 13);
+						typeOfThirdCard = (rand() % 4);
 						if (identifyCard(deck, thirdCard, typeOfThirdCard)){
-							thirdCard = (rand() % 13);
-							typeOfThirdCard = (rand() % 4);
 							position3(thirdCard,typeOfThirdCard);
 							deck[typeOfThirdCard][thirdCard] = 14;
 						}
-					} else if (changes[i] == 52){
+					} else if (chanceCards[i] == 52){
+						fourthCard = (rand() % 13);
+						typeOfFourthCard = (rand() % 4)	;
 						if (identifyCard(deck, fourthCard, typeOfFourthCard)){
-							fourthCard = (rand() % 13);
-							typeOfFourthCard = (rand() % 4)	;			
 							position4(fourthCard,typeOfFourthCard);
 							deck[typeOfFourthCard][fourthCard] = 14;
 						}
-					} else if (changes[i] == 53){
-						if (identifyCard(deck, fifthCard, typeOfFifthCard)){
-							fifthCard = (rand() % 13);
-							typeOfFifthCard = (rand() % 4);
+					} else if (chanceCards[i] == 53){
+						fifthCard = (rand() % 13);
+						typeOfFifthCard = (rand() % 4);
+						if (identifyCard(deck, fifthCard, typeOfFifthCard)){							
 							position5(fifthCard,typeOfFifthCard);
 							deck[typeOfFifthCard][fifthCard] = 14;
 						}
@@ -474,106 +455,132 @@ int main(){
 					betTemporal += bet * 250;
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 50;
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 25;
 					move(6,62);
 					printw("YOU WIN WITH POKER");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 9;
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 6;
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 4;
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 3;
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
+				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+					betTemporal += bet * 2;
+					move(6,62);
+					printw("YOU WIN WITH TWO PAIR");
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else {
 					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				}
-				betOn(betTemporal);
-				virtualBank(betIn());
 			} else if (decision == 110 || decision == 78) {
 				if(royalFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 250;
 					move(6,60);
 					printw("YOU WIN WITH ROYAL FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(straightFlush(firstCard,secondCard,thirdCard,fourthCard,fifthCard,typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 50;
 					move(6,60);
 					printw("YOU WIN WITH STRAIGHT FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(poker(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 25;
 					move(6,62);
 					printw("YOU WIN WITH POKER");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if (fullHouse(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 9;
 					move(6,60);
 					printw("YOU WIN WITH FULL HOUSE");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(flush(typeOfFirstCard,typeOfSecondCard,typeOfThirdCard,typeOfFourthCard,typeOfFifthCard)){
 					betTemporal += bet * 6;
 					move(6,62);
 					printw("YOU WIN WITH FLUSH");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(straight(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 4;
 					move(6,62);
 					printw("YOU WIN WITH STRAIGHT");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(threeOfAKind(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet * 3;
 					move(6,58);
 					printw("YOU WIN WITH THREE OF A KIND");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
+				} else if(twoPair(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
+					betTemporal += bet * 2;
+					move(6,62);
+					printw("YOU WIN WITH TWO PAIR");
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else if(pairOfJacksOrBetter(firstCard,secondCard,thirdCard,fourthCard,fifthCard)){
 					betTemporal += bet;
 					move(6,62);
 					printw("YOU WIN WITH PAIR");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				} else {
 					betTemporal = betTemporal - bet;
 					move(6,58);
 					printw("        YOU LOSE :(         ");
-					move(30,50);
+					betOn(betTemporal);
+					virtualBank(betIn());
 				}
-				betOn(betTemporal);
-				virtualBank(betIn());
 			}
 		}
 		refresh();
 	}
 	endwin();
+	delete[] chanceCards;
 	delete[] cardsOnTable;
-	delete[] cardsSelected;
 	delete[] deck;
 	deck = NULL;
 	return 0;
@@ -1177,46 +1184,44 @@ int** newDeck(int** deck){
 }
 
 void virtualBank(int money){
-	move(25,4);
+	move(23,4);
 	printw("======================");
-	move(26,4);
+	move(24,4);
 	printw("|    YOUR CREDITS    |");
+	move(25,4);
+	printw("|                    |");
+	move(26,4);
+	printw("|     $              |");
+	move(26,12);
+	printw("%d",money);
 	move(27,4);
 	printw("|                    |");
 	move(28,4);
-	printw("|     $              |");
-	move(28,12);
-	printw("%d",money);
-	move(29,4);
-	printw("|                    |");
-	move(30,4);
 	printw("======================");
 }
 
 void rulesOfBet(){
-	move(30,100);
+	move(29,4);
 	printw("____________________________");
-	move(31,100);
-	printw("|                          |");
-	move(32,100);
+	move(30,4);
 	printw("| 	x1   PAIR              |");
-	move(33,100);
+	move(31,4);
 	printw("| 	x2   TWO PAIR          |");
-	move(34,100);
+	move(32,4);
 	printw("| 	x3   THREE OF A KIND   |");
-	move(35,100);
+	move(33,4);
 	printw("|   x4   STRAIGHT          |");
-	move(36,100);
+	move(34,4);
 	printw("|   x6   FLUSH             |");
-	move(37,100);
+	move(35,4);
 	printw("|   x9   FULL HOUSE        |");
-	move(38,100);
+	move(36,4);
 	printw("|   x25  POKER             |");
-	move(39,100);
+	move(37,4);
 	printw("|   x50  STRAIGHT FLUSH    |");
-	move(40,100);
+	move(38,4);
 	printw("|   x250 ROYAL FLUSH       |");
-	move(41,100);
+	move(39,4);
 	printw("____________________________");
 }
 
@@ -1276,7 +1281,21 @@ bool pairOfJacksOrBetter(int first, int second, int third, int fourth, int fifth
 }
 
 bool twoPair(int first, int second, int third, int fourth, int fifth){
-
+	if (((first == second) && (third == fourth)) || ((first == second) && (third == fifth)) || ((first == second) && (fourth == fifth))
+		|| ((first == third) && (second == fourth)) || ((first == third) && (second == fifth)) || ((first == fourth) && (second == third))
+		|| ((first == fourth) && (second == fifth))){
+		return TRUE;
+	} else if (((second == third) && (fourth == first)) || ((second == third) && (fourth == fifth)) || ((second == fourth) && (first == fifth))
+		|| ((second == fourth) && (first == third)) || ((second == fifth) && (first == third)) || ((second == fifth) && (first == fourth))){
+		return TRUE;
+	} else if (((third == fourth) && (second == fifth)) || ((third == fourth) && (first == fifth)) || ((third == fifth) && (first == second))
+		|| ((third == fifth) && (first == fourth))){
+		return TRUE;
+	} else if(((fourth == fifth) && (first == third)) || ((fourth == fifth) && (first == second))){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 bool threeOfAKind(int first, int second, int third, int fourth, int fifth){
